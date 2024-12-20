@@ -7,11 +7,11 @@ from datetime import datetime, timezone
 # Define paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
 json_folder_path = os.path.join(current_dir, "json")
-media_folder_path = os.path.join(current_dir, "media")
+media_folder_path = "https://raw.githubusercontent.com/dmkr48/images/main/media"
 output_file_path = os.path.join(current_dir, "static_messages.json")
 
 def get_media_path(channel_id):
-    return os.path.join(media_folder_path, channel_id)
+    return f"{media_folder_path}/{channel_id}"
 
 def load_json_files_with_channel():
     messages = []
@@ -60,14 +60,12 @@ def classify_media_type(url, channel_id):
     media_path = get_media_path(channel_id)
 
     if url_extension.lower() in ['.mp3', '.m4a']:
-        file_path = os.path.join(media_path, f"{url_hash}.mp3")
-        if os.path.exists(file_path):
-            return "audio", f"media/{channel_id}/{url_hash}.mp3"
+        file_url = f"{media_folder_path}/{channel_id}/{url_hash}.mp3"
+        return "audio", file_url
     elif url_extension.lower() in ['.jpg', '.png', '.gif']:
         for ext in ['.jpg', '.png', '.gif']:
-            file_path = os.path.join(media_path, f"{url_hash}{ext}")
-            if os.path.exists(file_path):
-                return "image", f"media/{channel_id}/{url_hash}{ext}"
+            file_url = f"{media_folder_path}/{channel_id}/{url_hash}{ext}"
+            return "image", file_url
 
     return "unknown", url
 
