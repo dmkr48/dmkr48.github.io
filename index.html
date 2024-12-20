@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKT48 PM</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        /* Root Variables */
+        :root {
+            --primary-color: #2C2F33;
+            --secondary-color: #36393F;
+            --accent-color: #7289DA;
+            --text-color: #FFFFFF;
+            --message-hover-color: #4752C4;
+        }
+
+         /* White and Pink theme */
+        [data-theme="pink"] {
+            --primary-color: #ffffff;
+            --secondary-color: #fff5f8;
+            --accent-color: #ff69b4;
+            --text-color: #333333;
+            --message-hover-color: #ffcce0;
+        }
+
+         /* Black and Red theme */
+         [data-theme="red"] {
+            --primary-color: #2C2F33;
+            --secondary-color: #36393F;
+            --accent-color: #950101;
+            --text-color: #ffffff;
+            --message-hover-color: #830000;
+        }
+
+         /* White and Torquise theme */
+         [data-theme="Luminescent_Blue"] {
+            --primary-color: #E3FDFD;
+            --secondary-color: #CBF1F5;
+            --accent-color: #71C9CE;
+            --text-color: #333333;
+            --message-hover-color: #A6E3E9;
+        }
+
+         /* Pastel and Green theme */
+         [data-theme="pastel_green"] {
+            --primary-color: #E5D9B6;
+            --secondary-color: #A4BE7B;
+            --accent-color: #285430;
+            --text-color: #333333;
+            --message-hover-color: #5F8D4E;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Messages Container */
+        #messages {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+        }
+
+        /* Message Styles */
+        .message {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+            margin-bottom: 16px;
+        }
+
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: var(--message-hover-color);
+        }
+
+        /* Message Header and Avatar */
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+        }
+
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Message Content Styles */
+        .message-info {
+            flex-grow: 1;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .message-timestamp {
+            font-size: 0.8rem;
+            color: var(--text-color);
+        }
+
+        .message-content {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        /* Message Attachments */
+        .message-attachment {
+            margin-top: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .message-attachment img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .message-attachment img:hover {
+            transform: scale(1.02);
+        }
+
+        .message-attachment audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        /* Filter Container Styles */
+        .filter-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Filter Form Elements */
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(114, 137, 218, 0.3);
+        }
+
+        .filter-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+
+        /* Filter Button */
+        .filter-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 20px;
+        }
+
+        .filter-button:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .filter-button:active {
+            transform: translateY(0);
+        }
+
+        /* Full Image Modal */
+        #fullImageModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #fullImageModal.show {
+            opacity: 1;
+        }
+
+        #fullImage {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        h1 {
+            color: var(--accent-color);
+            text-align: center;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .message {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+
+            #messages {
+                max-width: 100%;
+            }
+
+            .message-avatar {
+                width: 32px;
+                height: 32px;
+            }
+
+            .filter-container {
+                padding: 15px;
+                margin: 10px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .filter-button {
+                width: 100%;
+            }
+
+            .message-content {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>JKT48 PM</h1>
+    
+    <div class="filter-container">
+        <div class="filter-grid">
+            
+            <div class="filter-group">
+                <label for="start_date">Start Date:</label>
+                <input type="text" id="start_date" name="start_date">
+            </div>
+
+            <div class="filter-group">
+                <label for="end_date">End Date:</label>
+                <input type="text" id="end_date" name="end_date">
+            </div>
+
+            <div class="filter-group">
+                <label for="channel">Member:</label>
+                <select id="channel" name="channel">
+                    <option value="All">All Members</option>
+                    <option value="1177001515857227857">(Gen 03) Feni</option>
+                    <option value="1177001494889893909">(Gen 03) Gracia</option>
+
+                    <option value="1177001972012949534">(Gen 06) Gita</option>
+
+                    <option value="1177007541973172254">(Gen 07) Christy</option>
+                    <option value="1177007658419617872">(Gen 07) Eli</option>
+                    <option value="1177007704468902059">(Gen 07) Freya</option>
+                    <option value="1177005953447645194">(Gen 07) Jessi</option>
+                    <option value="1177007628568764508">(Gen 07) Muthe</option>
+                    <option value="1177007682947928075">(Gen 07) Olla</option>
+
+                    <option value="1177015897873977474">(Gen 08) Fiony</option>
+                    <option value="1177015924767858728">(Gen 08) Flora</option>
+                    <option value="1177015971756646601">(Gen 08) Lulu</option>
+                    <option value="1177016028794990602">(Gen 08) Oniel</option>
+
+                    <option value="1177016672918442054">(Gen 09) Indah</option>
+                    <option value="1177021173280808990">(Gen 09) Kathrina</option>
+                    <option value="1177034551550283787">(Gen 09) Marsha</option>
+
+                    <option value="1177035130968227840">(Gen 10) Amanda</option>
+                    <option value="1177022205306089512">(Gen 10) Callie</option>
+                    <option value="1177021537912639508">(Gen 10) Ella</option>
+                    <option value="1177035013162815598">(Gen 10) Indira</option>
+
+                    
+                </select>
+            </div>
+
+            
+        </div>
+
+        <button class="filter-button" onclick="loadMessages()">
+            Apply Filters
+        </button>
+    </div>
+    
+    <div class="filter-container">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label for="mediaTypeFilter">Media Type:</label>
+                <select id="mediaTypeFilter">
+                    <option value="all">All Media Types</option>
+                    <option value="image">Images</option>
+                    <option value="audio">Audio</option>
+                    <option value="text">Text Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="themeSelect">Theme:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="default">Black and Blue</option>
+                    <option value="pink">White and Pink</option>
+                    <option value="red">Black and Red</option>
+                    <option value="Luminescent_Blue">Luminescent Blue</option>
+                    <option value="pastel_green">Pastel Green</option>
+                </select>
+            </div>
+        </div>
+    </div>
+            
+    </div>
+    <div id="messages"></div>
+    <div id="fullImageModal">
+        <img id="fullImage" src="">
+    </div>
+
+    <script>
+        flatpickr("#start_date", {});
+        flatpickr("#end_date", {});
+
+        function loadMessages() {
+            fetch('static_messages.json')
+               .then(response => response.json())
+               .then(data => {
+                   $("#messages").empty();
+            
+            // Filter messages based on selected criteria
+                   const startDate = new Date($("#start_date").val());
+                   const endDate = new Date($("#end_date").val());
+                   const selectedChannel = $("#channel").val();
+                   const selectedMediaType = $("#mediaTypeFilter").val();
+
+            
+// Added this line before the forEach:
+            data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            data.forEach(function(message) {
+                   const messageDate = new Date(message.timestamp);
+
+                // Filter by date range
+                   if (messageDate >= startDate && messageDate <= endDate) {
+                    // Filter by channel
+                       if (selectedChannel === "All" || message.channel_id === selectedChannel) {
+                        // Filter by media type
+                           if (selectedMediaType === "all" || selectedMediaType === message.media_type) {
+                               let messageHtml = `
+                                   <div class="message">
+                                       <div class="message-header">
+                                           <div class="message-avatar">
+                                               <img src="avatar/${getChannelName(message.channel_id)}.jpg" 
+                                                   alt="${getChannelName(message.channel_id)}"
+                                                   onerror="this.onerror=null; this.src='avatar/default.jpg';">
+                                           </div>
+                                           <div class="message-info">
+                                               <div class="message-author">${getChannelName(message.channel_id)}</div>
+                                               <div class="message-timestamp">${formatDate(message.timestamp)}</div>
+                                           </div>
+                                       </div>`;
+                            
+                               if (message.content) {
+                                messageHtml += `<div class="message-content">${message.content}</div>`;
+                               }
+                               if (message.url) {
+                                   if (message.media_type === "image") {
+                                     messageHtml += `
+                                        <div class="message-attachment">
+                                            <img src="${message.url}" onclick="showFullImage(this.src)" 
+                                                loading="lazy" alt="Attached image">
+                                        </div>`;
+                                   } else if (message.media_type === "audio") {
+                                     messageHtml += `
+                                        <div class="message-attachment">
+                                            <audio controls>
+                                                <source src="${message.url}" type="audio/mpeg">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        </div>`;
+                                   }
+                               }
+                               messageHtml += '</div>';
+                               $("#messages").append(messageHtml);
+                           }
+                       }
+                   }
+               });
+           })
+           .catch(error => console.error("Error loading messages:", error));
+   }
+  
+        // Helper function to get initials from name
+        function getInitials(name) {
+            return name
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+        }
+
+        // Get channel name based on channel ID
+function getChannelName(channelId) {
+    const channels = {
+        "1177001515857227857": "Feni",
+        "1177001494889893909": "Gracia",
+
+        "1177001972012949534": "Gita",
+
+        "1177007541973172254": "Christy",
+        "1177007658419617872": "Eli",
+        "1177007704468902059": "Freya",
+        "1177005953447645194": "Jessi",
+        "1177007628568764508": "Muthe",
+        "1177007682947928075": "Olla",
+        
+        "1177015897873977474": "Fiony",
+        "1177015924767858728": "Flora",
+        "1177015971756646601": "Lulu",
+        "1177016028794990602": "Oniel",
+
+        "1177016672918442054": "Indah",
+        "1177021173280808990": "Kathrina",
+        "1177034551550283787": "Marsha",
+
+        "1177035130968227840": "Amanda",
+        "1177022205306089512": "Callie",
+        "1177021537912639508": "Ella",
+        "1177035013162815598": "Indira",
+        "1177022335795073165": "Raisha",
+        
+        "1177035367942201494": "Greesel",
+        "1177035322547249223": "Gracie",
+        "1177129890605191188": "Daisy",
+        "1177129969701363712": "Danella",
+        "1177117307466690611": "Cynthia",
+        
+        "1208078091814043698": "Aralie",
+        "1208078154695180358": "Delynn",
+        "1208078327886258217": "Erine",
+        "1208079396183875594": "Fritzy",
+        "1208082554259906581": "Kimmy",
+        "1208078296231968850": "Lana",
+        "1208081737683570688": "Levi",
+        "1208081548965060608": "Lily",
+        "1208081645425401897": "Moreen",
+        "1208082171806613585": "Nachia",
+        "1208082406486183976": "Nala",
+        "1208081780964331623": "Nayla",
+        "1208082212084252792": "Oline",
+        "1208082254715166751": "Regie",
+        "1208082314714947614": "Ribka",
+        "1208081584050413678": "Trisha",
+
+        "1177016608451989574": "Ashel",
+        "1177005932127981629": "Chika",
+        "1177001460949598218": "Shani",
+        "1177007608830365736": "Zee",
+        
+        "1218234058870362306": "Extra"
+    };
+    return channels[channelId] || "Unknown Channel";
+}
+
+// Format date into a readable string
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
+}
+
+// Display full image in modal
+function showFullImage(src) {
+    $("#fullImage").attr("src", src);
+    $("#fullImageModal").addClass("show").css("display", "flex");
+}
+
+$("#fullImageModal").click(function() {
+    $(this).removeClass("show").css("display", "none");
+});
+
+// Reload messages on filter change
+$("#mediaTypeFilter").change(function() {
+    loadMessages();
+});
+
+// Load messages on page load
+$(document).ready(function() {
+    loadMessages();
+});
+
+        function changeTheme(theme) {
+            if (theme === 'default') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+        
+    </script>
+</body>
+</html>
