@@ -63,9 +63,8 @@ def classify_media_type(url, channel_id):
         file_url = f"{media_folder_path}/{channel_id}/{url_hash}.mp3"
         return "audio", file_url
     elif url_extension.lower() in ['.jpg', '.png', '.gif']:
-        for ext in ['.jpg', '.png', '.gif']:
-            file_url = f"{media_folder_path}/{channel_id}/{url_hash}{ext}"
-            return "image", file_url
+        file_url = f"{media_folder_path}/{channel_id}/{url_hash}.png"
+        return "image", file_url
 
     return "unknown", url
 
