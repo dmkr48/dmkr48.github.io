@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 # Define paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
 json_folder_path = os.path.join(current_dir, "json")
-media_folder_path = "https://raw.githubusercontent.com/dmkr48/images/main/media"
+media_folder_path = "https://raw.githubusercontent.com/dmkr48/images/refs/heads/main/media"
 output_file_path = os.path.join(current_dir, "static_messages.json")
 
 def get_media_path(channel_id):
