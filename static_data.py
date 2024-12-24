@@ -7,11 +7,30 @@ from datetime import datetime, timezone
 # Define paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
 json_folder_path = os.path.join(current_dir, "json")
-media_folder_path = "https://raw.githubusercontent.com/dmkr48/images/main/media"
+media_folder_path_1 = "https://raw.githubusercontent.com/dmkr48/images/main/media"
+media_folder_path_2 = "https://raw.githubusercontent.com/dmkr48/images2/main/media"
 output_file_path = os.path.join(current_dir, "static_messages.json")
 
+# Channel mapping to media folder paths
+channel_media_mapping = {
+    #gen 3, 6, 7, 8, 9, 10
+    "media_folder_path_1": [1177001515857227857, 1177001494889893909,
+                            1177001972012949534, 
+                            1177007541973172254, 1177007658419617872, 1177007704468902059, 1177005953447645194, 1177007628568764508, 1177007682947928075, 
+                            1177015897873977474, 1177015924767858728, 1177015971756646601, 1177016028794990602, 
+                            1177016672918442054, 1177021173280808990, 1177034551550283787, 
+                            1177035130968227840, 1177022205306089512, 1177021537912639508, 1177035013162815598, 1177034734954618912, 1177021510871953559, 1177022335795073165],
+    "media_folder_path_2": [1177117244686336100, 1177022335795073165, 1177117264487657513, 1177129851526848633, 1177117307466690611, 1177129890605191188, 1177129969701363712, 1177164766872092752, 1177164785788403753, 1177035322547249223, 1177035367942201494, 1177129826532999199, 
+                            1208078091814043698, 1208078154695180358, 1208078327886258217, 1208079396183875594, 1208082554259906581, 1208078296231968850, 1208081737683570688, 1208081548965060608],
+}
+
 def get_media_path(channel_id):
-    return f"{media_folder_path}/{channel_id}"
+    if channel_id in channel_media_mapping["media_folder_path_1"]:
+        return media_folder_path_1
+    elif channel_id in channel_media_mapping["media_folder_path_2"]:
+        return media_folder_path_2
+    else:
+        raise ValueError(f"Channel ID {channel_id} is not mapped to a media folder.")
 
 def load_json_files_with_channel():
     messages = []
@@ -60,10 +79,10 @@ def classify_media_type(url, channel_id):
     media_path = get_media_path(channel_id)
 
     if url_extension.lower() in ['.mp3', '.m4a']:
-        file_url = f"{media_folder_path}/{channel_id}/{url_hash}.mp3"
+        file_url = f"{media_path}/{channel_id}/{url_hash}.mp3"
         return "audio", file_url
     elif url_extension.lower() in ['.jpg', '.png', '.gif']:
-        file_url = f"{media_folder_path}/{channel_id}/{url_hash}.png"
+        file_url = f"{media_path}/{channel_id}/{url_hash}.png"
         return "image", file_url
 
     return "unknown", url
@@ -73,15 +92,18 @@ def generate_static_data():
     processed_messages = []
 
     for message in messages:
-        media_type, static_url = classify_media_type(message["url"], message["channel_id"])
-        processed_messages.append({
-            "content": message["content"],
-            "url": static_url,
-            "date_str": message["date_str"],
-            "timestamp": message["timestamp"],
-            "channel_id": message["channel_id"],
-            "media_type": media_type
-        })
+        try:
+            media_type, static_url = classify_media_type(message["url"], message["channel_id"])
+            processed_messages.append({
+                "content": message["content"],
+                "url": static_url,
+                "date_str": message["date_str"],
+                "timestamp": message["timestamp"],
+                "channel_id": message["channel_id"],
+                "media_type": media_type
+            })
+        except ValueError as e:
+            print(f"Error processing message: {e}")
 
     # Save to static JSON file
     with open(output_file_path, 'w', encoding='utf-8') as output_file:
