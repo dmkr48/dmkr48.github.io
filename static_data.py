@@ -27,7 +27,7 @@ channel_media_mapping = {
 
 
 def get_media_path(channel_id):
-     channel_id = int(str(channel_id).strip())
+    channel_id = int(str(channel_id).strip())
     if channel_id in channel_media_mapping["media_folder_path_1"]:
         return media_folder_path_1
     elif channel_id in channel_media_mapping["media_folder_path_2"]:
