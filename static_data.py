@@ -34,12 +34,12 @@ channel_media_mapping = {
     "media_folder_path_4": [1177034734954618912],
     #gen michie images2
     "media_folder_path_5": [1177129826532999199],
-
 }
 
 
 def get_media_path(channel_id):
     channel_id = int(str(channel_id).strip())
+   
     if channel_id in channel_media_mapping["media_folder_path_1"]:
         return media_folder_path_1
     elif channel_id in channel_media_mapping["media_folder_path_2"]:
