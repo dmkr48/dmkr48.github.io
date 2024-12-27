@@ -46,9 +46,9 @@ def get_media_path(channel_id):
         return media_folder_path_2
     elif channel_id in channel_media_mapping["media_folder_path_3"]:
         return media_folder_path_3
-    elif channel_id in channel_media_mapping["media_folder_path_3"]:
+    elif channel_id in channel_media_mapping["media_folder_path_4"]:
         return media_folder_path_4
-    elif channel_id in channel_media_mapping["media_folder_path_3"]:
+    elif channel_id in channel_media_mapping["media_folder_path_5"]:
         return media_folder_path_5
     else:
         raise ValueError(f"Channel ID {channel_id} is not mapped to a media folder.")
