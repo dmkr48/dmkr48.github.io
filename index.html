@@ -10,47 +10,35 @@
     <style>
         /* Root Variables */
         :root {
-            --primary-color: #2C2F33;
-            --secondary-color: #36393F;
-            --accent-color: #7289DA;
-            --text-color: #FFFFFF;
-            --message-hover-color: #4752C4;
-        }
-
-         /* White and Pink theme */
-        [data-theme="pink"] {
             --primary-color: #ffffff;
             --secondary-color: #fff5f8;
             --accent-color: #ff69b4;
             --text-color: #333333;
             --message-hover-color: #ffcce0;
         }
-
-         /* Black and Red theme */
-         [data-theme="red"] {
-            --primary-color: #2C2F33;
-            --secondary-color: #36393F;
-            --accent-color: #950101;
-            --text-color: #ffffff;
-            --message-hover-color: #830000;
+        /*Team J*/
+        [data-theme="team_j"] {
+            --primary-color: #8B0000; /* Deep red */
+            --secondary-color: #D32F2F; /* Crimson red */
+            --accent-color: #FFD700; /* Gold */
+            --text-color: #FFFFFF; /* White */
+            --message-hover-color: #A52A2A; /* Brownish red */
         }
-
-         /* White and Torquise theme */
-         [data-theme="Luminescent_Blue"] {
-            --primary-color: #E3FDFD;
-            --secondary-color: #CBF1F5;
-            --accent-color: #71C9CE;
-            --text-color: #333333;
-            --message-hover-color: #A6E3E9;
+        /*Team KIII*/
+        [data-theme="team_kiii"] {
+            --primary-color: #001F54; /* Navy blue */
+            --secondary-color: #4682B4; /* Steel blue */
+            --accent-color: #FFD700; /* Gold */
+            --text-color: #FFFFFF; /* White */
+            --message-hover-color: #87CEEB; /* Sky blue */
         }
-
-         /* Pastel and Green theme */
-         [data-theme="pastel_green"] {
-            --primary-color: #E5D9B6;
-            --secondary-color: #A4BE7B;
-            --accent-color: #285430;
-            --text-color: #333333;
-            --message-hover-color: #5F8D4E;
+        /*Team T*/
+        [data-theme="team_t"] {
+            --primary-color: #FF6347; /* Tomato red */
+            --secondary-color: #FFA07A; /* Light salmon */
+            --accent-color: #FFD700; /* Gold */
+            --text-color: #FFFFFF; /* White */
+            --message-hover-color: #FF4500; /* Orange red */
         }
 
         /* Base Styles */
@@ -465,11 +453,11 @@
             <div class="filter-group">
                 <label for="themeSelect">Theme:</label>
                 <select id="themeSelect" onchange="changeTheme(this.value)">
-                    <option value="default">Black and Blue</option>
-                    <option value="pink">White and Pink</option>
-                    <option value="red">Black and Red</option>
-                    <option value="Luminescent_Blue">Luminescent Blue</option>
-                    <option value="pastel_green">Pastel Green</option>
+                    <option value="default">>White and Pink</option>
+                    <option value="team_j">J</option>
+                    <option value="team_kiii">KIII</option>
+                    <option value="team_t">T</option>
+                    
                 </select>
             </div>
         </div>
