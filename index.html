@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKT48 PM</title>
+    <style>
+        /* === VISUAL DESIGN - UNCHANGED === */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #fff0f5;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent: #ff69b4;
+            --border: #ffd6e7;
+            --card-bg: #ffffff;
+            --shadow: rgba(255, 105, 180, 0.15);
+        }
+        [data-theme="dark-blue"] {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #1a1f35;
+            --text-primary: #e0e0ff;
+            --text-secondary: #a0a0c0;
+            --accent: #6495ed;
+            --border: #4a5580;
+            --card-bg: #151a2e;
+            --shadow: rgba(100, 149, 237, 0.2);
+        }
+        [data-theme="dark-red"] {
+            --bg-primary: #1a0a0a;
+            --bg-secondary: #2e1515;
+            --text-primary: #ffe0e0;
+            --text-secondary: #c0a0a0;
+            --accent: #dc143c;
+            --border: #804a4a;
+            --card-bg: #251010;
+            --shadow: rgba(220, 20, 60, 0.25);
+        }
+        [data-theme="luminescent"] {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #152035;
+            --text-primary: #b0e0ff;
+            --text-secondary: #70a0d0;
+            --accent: #00bfff;
+            --border: #4a7a9a;
+            --card-bg: #101a2a;
+            --shadow: rgba(0, 191, 255, 0.2);
+        }
+        [data-theme="pastel-green"] {
+            --bg-primary: #f0fff0;
+            --bg-secondary: #e0ffe0;
+            --text-primary: #2d4a2d;
+            --text-secondary: #5a7a5a;
+            --accent: #90ee90;
+            --border: #c0e8c0;
+            --card-bg: #ffffff;
+            --shadow: rgba(144, 238, 144, 0.15);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px var(--shadow);
+        }
+        .date-range {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .member-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+        .member-tag {
+            background: var(--bg-secondary);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .control-group label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            min-width: 150px;
+        }
+        button {
+            padding: 8px 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px var(--shadow); }
+        button:active { transform: translateY(0); }
+        .donate-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ffa502);
+            margin-left: 10px;
+        }
+        #messages-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .message-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .message-content {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .message-media {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .message-media img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .message-media img:hover { transform: scale(1.02); }
+        .message-media audio,
+        .message-media video {
+            width: 100%;
+            max-width: 500px;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #dc143c;
+            background: rgba(220, 20, 60, 0.1);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .controls { flex-direction: column; align-items: stretch; }
+            .control-group { width: 100%; }
+            select, input { width: 100%; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body data-theme="default">
+    <header>
+        <h1>JKT48 PM</h1>
+        <div class="date-range">
+            Start Date:
+        </div>
+        <div class="member-list" id="member-list">
+            <!-- Members populated by JS -->
+        </div>
+    </header>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="channel-select">Channel:</label>
+            <select id="channel-select">
+                <option value="">-- Select Channel --</option>
+                <!-- Channels populated by JS -->
+            </select>
+        </div>
+        <div class="control-group">
+            <label for="media-type">Media Type:</label>
+            <select id="media-type">
+                <option value="all">All Media Types</option>
+                <option value="image">Images</option>
+                <option value="audio">Audio</option>
+                <option value="video">Video</option>
+                <option value="text">Text Only</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label for="theme-select">Theme:</label>
+            <select id="theme-select">
+                <option value="default">White and Pink</option>
+                <option value="dark-blue">Black and Blue</option>
+                <option value="dark-red">Black and Red</option>
+                <option value="luminescent">Luminescent Blue</option>
+                <option value="pastel-green">Pastel Green</option>
+            </select>
+        </div>
+        <button id="apply-btn">Apply</button>
+        <button class="donate-btn" onclick="window.open('https://saweria.co/yourname', '_blank')">Donasi (Saweria)</button>
+    </div>
+
+    <div id="messages-container">
+        <div class="loading">Select a channel and click "Apply" to load messages.</div>
+    </div>
+
+    <footer>
+        <p>Backup Archive • Made with ❤️ for JKT48 fans</p>
+    </footer>
+
+    <script>
+        // === CHANNEL CONFIG (ID → Display Name) ===
+        const CHANNELS = {
+            // Gen 3
+            "1177001515857227857": "Gen 3 - Channel A",
+            "1177001494889893909": "Gen 3 - Channel B",
+            // Gen 6
+            "1484896149713457213": "Gen 6 - Gita",
+            // Gen 7
+            "1484896111696154674": "Gen 7 - Christy",
+            "1484896125243887791": "Gen 7 - Eli",
+            "1484896141614121101": "Gen 7 - Freya",
+            "1484896166289342536": "Gen 7 - Jessi",
+            "1484896202196521111": "Gen 7 - Muthe",
+            "1484896206223048799": "Gen 7 - Olla",
+            // Gen 8
+            "1484896138522918932": "Gen 8 - Fiony",
+            "1484896185662836807": "Gen 8 - Lulu",
+            "1484896211289899130": "Gen 8 - Oniel",
+            // Gen 9
+            "1484896162787102720": "Gen 9 - Indah",
+            "1484896177127424111": "Gen 9 - Kathrina",
+            "1484896193719828651": "Gen 9 - Marsha",
+            
+        };
+
+        // === MEMBER LIST (for header display) ===
+        // const MEMBERS = [
+        //     "All Members (Gen 03)", "Feni (Gen 03)", "Gracia (Gen 06)", "Gita (Gen 07)", 
+        //     "Christy (Gen 07)", "Eli (Gen 07)", "Freya (Gen 07)", "Jessi (Gen 07)", 
+        //     "Muthe (Gen 07)", "Olla (Gen 08)", "Fiony (Gen 08)", "Flora (Gen 08)", 
+        //     "Lulu (Gen 08)", "Oniel (Gen 09)", "Indah (Gen 09)", "Kathrina (Gen 09)", 
+        //     "Marsha (Gen 10)", "Amanda (Gen 10)", "Ella (Gen 10)", "Indira (Gen 10)", 
+        //     "Lia (Gen 10)", "Lyn (Gen 10)", "Raisha (Gen 11)", "Alya (Gen 11)", 
+        //     "Anin (Gen 11)", "Cathy (Gen 11)", "Chelsea (Gen 11)", "Cynthia (Gen 11)", 
+        //     "Daisy (Gen 11)", "Danella (Gen 11)", "Elin (Gen 11)", "Gendis (Gen 11)", 
+        //     "Gracie (Gen 11)", "Greesel (Gen 11)", "Michie (Gen 12)", "Aralie (Gen 12)", 
+        //     "Delynn (Gen 12)", "Erine (Gen 12)", "Fritzy (Gen 12)", "Kimmy (Gen 12)", 
+        //     "Lana (Gen 12)", "Levi (Gen 12)", "Lily (Gen 12)", "Moreen (Gen 12)", 
+        //     "Nachia (Gen 12)", "Nala (Gen 12)", "Nayla (Gen 12)", "Oline (Gen 12)", 
+        //     "Regie (Gen 12)", "Ribka (Gen 12)", "Trisha (Ex-Member)", "Shani (Ex-Member)", 
+        //     "Chika (Ex-Member)", "Zee (Ex-Member)", "Adel (Ex-Member)", "Ashel (Ex-Member)", 
+        //     "Callie (Ex-Member)", "Jeane", "zEli", "zOlla", "zKathrina", "zIndah", 
+        //     "zElla", "zIndira", "zCathy", "zGracie", "zGreesel", "zErine", "zDelynn", "zLana"
+        // ];
+
+        // === STATE ===
+        let currentMessages = [];
+        let currentChannel = null;
+
+        // === INIT ===
+        document.addEventListener('DOMContentLoaded', () => {
+            populateMemberList();
+            populateChannelSelect();
+            setupEventListeners();
+        });
+
+        function populateMemberList() {
+            const container = document.getElementById('member-list');
+            container.innerHTML = MEMBERS.map(member => 
+                `<span class="member-tag">${member}</span>`
+            ).join('');
+        }
+
+        function populateChannelSelect() {
+            const select = document.getElementById('channel-select');
+            // Sort channels by name for easier browsing
+            const sorted = Object.entries(CHANNELS).sort((a, b) => a[1].localeCompare(b[1]));
+            
+            sorted.forEach(([id, name]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = name;
+                select.appendChild(option);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('apply-btn').addEventListener('click', loadMessages);
+            document.getElementById('theme-select').addEventListener('change', (e) => {
+                document.body.dataset.theme = e.target.value;
+            });
+        }
+
+        // === LOAD & RENDER MESSAGES ===
+        async function loadMessages() {
+            const container = document.getElementById('messages-container');
+            const channelId = document.getElementById('channel-select').value;
+            const mediaType = document.getElementById('media-type').value;
+            
+            if (!channelId) {
+                container.innerHTML = '<div class="error">Please select a channel first.</div>';
+                return;
+            }
+            
+            container.innerHTML = '<div class="loading">Loading messages...</div>';
+            currentChannel = channelId;
+            
+            try {
+                // Fetch per-channel JSON (lazy loading!)
+                const response = await fetch(`static_data/${channelId}.json`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                let messages = await response.json();
+                
+                // Apply filters
+                if (mediaType !== 'all') {
+                    messages = messages.filter(m => m.media_type === mediaType);
+                }
+                
+                currentMessages = messages;
+                renderMessages(messages);
+                
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                container.innerHTML = `<div class="error">Failed to load messages: ${error.message}<br><small>Check that static_data/${channelId}.json exists</small></div>`;
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('messages-container');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="loading">No messages match your filters.</div>';
+                return;
+            }
+            
+            // Sort by timestamp (newest first)
+            messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            container.innerHTML = messages.map(msg => {
+                const date = msg.timestamp ? new Date(msg.timestamp).toLocaleString('id-ID', {
+                    year: 'numeric', month: 'short', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                }) : 'Unknown date';
+                
+                let mediaHtml = '';
+                if (msg.media_type === 'image' && msg.url) {
+                    mediaHtml = `<div class="message-media"><img src="${msg.url}" alt="Attachment" loading="lazy" onclick="window.open(this.src)"></div>`;
+                } else if (msg.media_type === 'audio' && msg.url) {
+                    mediaHtml = `<div class="message-media"><audio controls src="${msg.url}"></audio></div>`;
+                } else if (msg.media_type === 'video' && msg.url) {
+                    mediaHtml = `<div class="message-media"><video controls src="${msg.url}"></video></div>`;
+                }
+                
+                const contentHtml = msg.content 
+                    ? `<div class="message-content">${escapeHtml(msg.content)}</div>` 
+                    : '';
+                
+                return `
+                    <div class="message-card">
+                        <div class="message-header">
+                            <span>${CHANNELS[msg.channel_id] || 'Unknown Channel'}</span>
+                            <span>${date}</span>
+                        </div>
+                        ${contentHtml}
+                        ${mediaHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // === UTILS ===
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
