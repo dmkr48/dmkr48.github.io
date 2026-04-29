@@ -19,6 +19,8 @@ MEDIA_REPOS = {
     "repo4": "https://raw.githubusercontent.com/dmkr48/gen9/main/media",
     "repo5": "https://raw.githubusercontent.com/dmkr48/gen10/main/media",
     "repo6": "https://raw.githubusercontent.com/dmkr48/gen11/main/media",
+    "repo7": "https://raw.githubusercontent.com/dmkr48/gen12/main/media",
+    #"repo8": "https://raw.githubusercontent.com/dmkr48/gen13/main/media",
 }
 
 # Map channel IDs to repo keys
