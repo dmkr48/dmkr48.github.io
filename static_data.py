@@ -17,6 +17,8 @@ MEDIA_REPOS = {
     "repo2": "https://raw.githubusercontent.com/dmkr48/gen7/main/media",
     "repo3": "https://raw.githubusercontent.com/dmkr48/gen8/main/media",
     "repo4": "https://raw.githubusercontent.com/dmkr48/gen9/main/media",
+    "repo5": "https://raw.githubusercontent.com/dmkr48/gen10/main/media",
+    "repo6": "https://raw.githubusercontent.com/dmkr48/gen11/main/media",
 }
 
 # Map channel IDs to repo keys
@@ -39,6 +41,24 @@ CHANNEL_TO_REPO = {
     1484896177127424111: "repo4", #kathrina gen9
     1484896193719828651: "repo4", #marsha gen9
 
+    1484896133615587498: "repo5", #ella gen10
+    1484896181342437376: "repo5", #lia gen10
+    1484896189634711763: "repo5", #lyn gen10
+    1484896215236743289: "repo5", #raisha gen10
+    
+    1484896090800001074: "repo6", #Alya gen11
+    1484896098945339573: "repo6", #Anin gen11
+    1484896102489784392: "repo6", #Cathy gen11
+    1484896106210132099: "repo6", #Chelsea gen11
+    1484896114762317994: "repo6", #Cynthia gen11
+    1484896118197190776: "repo6", #Daisy gen11
+    1484896121309630515: "repo6", #Danella gen11
+    1484896129836384470: "repo6", #Elin gen11
+    1484896153702109187: "repo6", #Gracie gen11
+    1484896157850275981: "repo6", #Greesel gen11
+    1484896198782615693: "repo6", #Michie gen11
+
+    
 }
 
 def get_repo_url(channel_id):
