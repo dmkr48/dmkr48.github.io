@@ -58,7 +58,20 @@ CHANNEL_TO_REPO = {
     1484896157850275981: "repo6", #Greesel gen11
     1484896198782615693: "repo6", #Michie gen11
 
-    
+    1484896220408184974: "repo7", #Aralie gen12
+    1484896098945339573: "repo7", #Delynn gen12
+    1484896230411866208: "repo7", #Erine gen12
+    1484896234459369603: "repo7", #Fritzy gen12
+    1484896268290621570: "repo7", #Kimmy gen12
+    1484896226406301697: "repo7", #Lana gen12
+    1484896246077591603: "repo7", #Levi gen12
+    1484896237931991090: "repo7", #Lily gen12
+    1484896253429940314: "repo7", #Nachia gen12
+    1484896263928283146: "repo7", #Nala gen12
+    1484896250015907860: "repo7", #Nayla gen12
+    1484896256672399410: "repo7", #Oline gen12
+    1484896260006608896: "repo7", #Ribka gen12
+    1484896242109775902: "repo7", #Trisha gen12
 }
 
 def get_repo_url(channel_id):
