@@ -61,7 +61,7 @@ CHANNEL_TO_REPO = {
     1484896198782615693: "repo6", #Michie gen11
 
     1484896220408184974: "repo7", #Aralie gen12
-    1484896098945339573: "repo7", #Delynn gen12
+    1484908841031307285: "repo7", #Delynn gen12
     1484896230411866208: "repo7", #Erine gen12
     1484896234459369603: "repo7", #Fritzy gen12
     1484896268290621570: "repo7", #Kimmy gen12
