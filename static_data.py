@@ -186,18 +186,45 @@ def load_and_process_json_files():
     return channel_data
 
 def save_per_channel_json(channel_data):
-    """Save each channel's messages to its own JSON file."""
+    """Save each channel's messages to its own JSON file, merging with existing data."""
     Path(OUTPUT_FOLDER).mkdir(parents=True, exist_ok=True)
     
-    for channel_id, messages in channel_data.items():
-        # Sort by timestamp (oldest first)
-        messages.sort(key=lambda x: x.get("timestamp") or "")
-        
+    for channel_id, new_messages in channel_data.items():
         output_path = Path(OUTPUT_FOLDER) / f"{channel_id}.json"
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(messages, f, indent=2, ensure_ascii=False)
         
-        print(f"✅ Saved {len(messages)} messages → {output_path.name}")
+        # 1. Load existing data if file exists
+        existing_messages = []
+        if output_path.exists():
+            try:
+                with open(output_path, "r", encoding="utf-8") as f:
+                    existing_messages = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                print(f"⚠️  Could not read existing file {output_path.name}, overwriting.")
+
+        # 2. Merge and remove duplicates
+        # Use a set of keys (timestamp + content + url) to identify unique messages
+        seen_keys = set()
+        combined_list = []
+        
+        # Combine lists: existing first, then new
+        for msg in existing_messages + new_messages:
+            # Create a unique signature for the message
+            # We use timestamp, content, and url to ensure uniqueness
+            msg_key = (msg.get("timestamp"), msg.get("content"), msg.get("url"))
+            
+            if msg_key not in seen_keys:
+                combined_list.append(msg)
+                seen_keys.add(msg_key)
+
+        # 3. Sort by timestamp (oldest first)
+        combined_list.sort(key=lambda x: x.get("timestamp") or "")
+        
+        # 4. Save the merged list back to the file
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(combined_list, f, indent=2, ensure_ascii=False)
+        
+        added_count = len(combined_list) - len(existing_messages)
+        print(f"✅ {output_path.name}: {len(combined_list)} total (merged {added_count} new entries)")
 
 def main():
     print(f"📁 Input: {JSON_FOLDER}")
@@ -211,7 +238,7 @@ def main():
     
     save_per_channel_json(channel_data)
     
-    print(f"\n🎉 Done! Generated {len(channel_data)} channel file(s)")
+    print(f"\n🎉 Done! Processed {len(channel_data)} channel(s)")
     print(f"📦 Output location: {OUTPUT_FOLDER}")
 
 if __name__ == "__main__":
