@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JKT48 PM</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        /* Root Variables */
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #fff5f8;
+            --accent-color: #ff69b4;
+            --text-color: #333333;
+            --message-hover-color: #ffcce0;
+        }
+         /* White and Pink theme */
+        [data-theme="discord"] {
+            --primary-color: #2C2F33;
+            --secondary-color: #36393F;
+            --accent-color: #7289DA;
+            --text-color: #FFFFFF;
+            --message-hover-color: #4752C4;
+        }
+         /* Black and Red theme */
+         [data-theme="red"] {
+            --primary-color: #2C2F33;
+            --secondary-color: #36393F;
+            --accent-color: #950101;
+            --text-color: #ffffff;
+            --message-hover-color: #830000;
+        }
+         /* White and Torquise theme */
+         [data-theme="Luminescent_Blue"] {
+            --primary-color: #E3FDFD;
+            --secondary-color: #CBF1F5;
+            --accent-color: #71C9CE;
+            --text-color: #333333;
+            --message-hover-color: #A6E3E9;
+        }
+         /* Pastel and Green theme */
+         [data-theme="pastel_green"] {
+            --primary-color: #E5D9B6;
+            --secondary-color: #A4BE7B;
+            --accent-color: #285430;
+            --text-color: #333333;
+            --message-hover-color: #5F8D4E;
+         }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Messages Container */
+        #messages {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+        }
+
+        .message {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: var(--message-hover-color);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--accent-color);
+            background-color: #eee;
+        }
+
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .message-timestamp {
+            font-size: 0.75rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin-bottom: 10px;
+        }
+
+        .message-attachment {
+            margin-top: 10px;
+            max-width: 100%;
+        }
+
+        .message-attachment img, 
+        .message-attachment video {
+            max-width: 100%;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .filter-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .filter-group input, 
+        .filter-group select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .filter-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .error-msg {
+            text-align: center;
+            color: #ff4444;
+            padding: 20px;
+            background: rgba(255,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        #fullImageModal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #fullImage {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        h1 { text-align: center; color: var(--accent-color); }
+    </style>
+</head>
+<body>
+    <h1>JKT48 PM</h1>
+    
+    <div class="filter-container">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label for="channel">Member:</label>
+                <select id="channel" name="channel">
+                    <!-- Note: Only specific member IDs will work if you have individual JSON files for them -->
+                    <option value="All" disabled>Please select a Member</option>
+                    <option value="1484896149713457213" selected>(Gen 06) Gita</option>
+                    
+                    <option value="1484896111696154674">(Gen 07) Christy</option>
+                    <option value="1484896125243887791">(Gen 07) Eli</option>
+                    <option value="1484896141614121101">(Gen 07) Freya</option>
+                    <option value="1484896166289342536">(Gen 07) Jessi</option>
+                    <option value="1484896202196521111">(Gen 07) Muthe</option>
+                    <option value="1484896206223048799">(Gen 07) Olla</option>
+                    
+                    <option value="1484896138522918932">(Gen 08) Fiony</option>
+                    <option value="1484896185662836807">(Gen 08) Lulu</option>
+                    <option value="1484896211289899130">(Gen 08) Oniel</option>
+                    
+                    <option value="1484896162787102720">(Gen 09) Indah</option>
+                    <option value="1484896177127424111">(Gen 09) Kathrina</option>
+                    <option value="1484896193719828651">(Gen 09) Marsha</option>
+                    
+                    <option value="1484896133615587498">(Gen 10) Ella</option>
+                    <option value="1484896181342437376">(Gen 10) Lia</option>
+                    <option value="1484896189634711763">(Gen 10) Lyn</option>
+                    <option value="1484896215236743289">(Gen 10) Raisha</option>
+                    
+                    <option value="1484896090800001074">(Gen 11) Alya</option>
+                    <option value="1484896098945339573">(Gen 11) Anin</option>
+                    <option value="1484896102489784392">(Gen 11) Cathy</option>
+                    <option value="1484896106210132099">(Gen 11) Chelsea</option>
+                    <option value="1484896114762317994">(Gen 11) Cynthia</option>
+                    <option value="1484896118197190776">(Gen 11) Daisy</option>
+                    <option value="1484896121309630515">(Gen 11) Danella</option>
+                    <option value="1484896129836384470">(Gen 11) Elin</option>
+                    <option value="1484896144890007682">(Gen 11) Gendis</option>
+                    <option value="1484896153702109187">(Gen 11) Gracie</option>
+                    <option value="1484896157850275981">(Gen 11) Greesel</option>
+                    <option value="1484896198782615693">(Gen 11) Michie</option>
+                    
+                    <option value="1484896220408184974">(Gen 12) Aralie</option>
+                    <option value="1484908841031307285">(Gen 12) Delynn</option>
+                    <option value="1484896230411866208">(Gen 12) Erine</option>
+                    <option value="1484896234459369603">(Gen 12) Fritzy</option>
+                    <option value="1484896268290621570">(Gen 12) Kimmy</option>
+                    <option value="1484896226406301697">(Gen 12) Lana</option>
+                    <option value="1484896246077591603">(Gen 12) Levi</option>
+                    <option value="1484896237931991090">(Gen 12) Lily</option>
+                    <option value="1484896253429940314">(Gen 12) Nachia</option>
+                    <option value="1484896263928283146">(Gen 12) Nala</option>
+                    <option value="1484896250015907860">(Gen 12) Nayla</option>
+                    <option value="1484896256672399410">(Gen 12) Oline</option>
+                    <option value="1484896260006608896">(Gen 12) Ribka</option>
+                    <option value="1484896242109775902">(Gen 12) Trisha</option>
+
+                    <option value="1484896276767182868">(Gen 13) Auwia</option>
+                    <option value="1484896291564818513">(Gen 13) Ekin</option>
+                    <option value="1484896284593754314">(Gen 13) Giaa</option>
+                    <option value="1484896309025443882">(Gen 13) Intan</option>
+                    <option value="1484896294773461125">(Gen 13) Jemima</option>
+                    <option value="1484896288368758784">(Gen 13) Maira</option>
+                    <option value="1484896298942464212">(Gen 13) Mikaela</option>
+                    <option value="1484896280810356757">(Gen 13) Rilly</option>
+                    <option value="1484896273441226812">(Gen 13) Virgi</option>
+
+                    <option value="1502872151118839829">(Gen 14) Bella</option>
+                    <option value="1502872138909220966">(Gen 14) Carissa</option>
+                    <option value="1502872163168817162">(Gen 14) Fahira</option>
+                    <option value="1502872126946938950">(Gen 14) Fera</option>
+                    <option value="1502872187856752812">(Gen 14) Heidi</option>
+                    <option value="1502872212242432010">(Gen 14) Jazzy</option>
+                    <option value="1502872200473219152">(Gen 14) Maxine</option>
+                    <option value="1502872224669892719">(Gen 14) Ralyne</option>
+                    <option value="1502872174745358427">(Gen 14) Rara</option>
+                    <option value="1502872236569264158">(Gen 14) Sona</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="start_date">Start Date:</label>
+                <input type="text" id="start_date" placeholder="Select Date">
+            </div>
+            <div class="filter-group">
+                <label for="end_date">End Date:</label>
+                <input type="text" id="end_date" placeholder="Select Date">
+            </div>
+        </div>
+        
+        <div class="filter-grid" style="margin-top: 15px;">
+            <div class="filter-group">
+                <label for="mediaTypeFilter">Media Type:</label>
+                <select id="mediaTypeFilter">
+                    <option value="all">All Media Types</option>
+                    <option value="image">Images</option>
+                    <option value="audio">Audio</option>
+                    <option value="video">Video</option>
+                    <option value="text">Text Only</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="themeSelect">Theme:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="default">White and Pink</option>
+                    <option value="discord">Black and Blue</option>
+                    <option value="red">Black and Red</option>
+                    <option value="Luminescent_Blue">Luminescent Blue</option>
+                    <option value="pastel_green">Pastel Green</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="filter-button" onclick="loadMessages()">Apply Filter</button>
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="fullImageModal" onclick="this.style.display='none'">
+        <img id="fullImage" src="">
+    </div>
+
+    <script>
+        // Initialize date pickers
+        flatpickr("#start_date", { dateFormat: "Y-m-d" });
+        flatpickr("#end_date", { dateFormat: "Y-m-d" });
+
+        function loadMessages() {
+            const channelId = $("#channel").val();
+            const selectedMediaType = $("#mediaTypeFilter").val();
+            const startDateStr = $("#start_date").val();
+            const endDateStr = $("#end_date").val();
+
+            const startDate = startDateStr ? new Date(startDateStr + "T00:00:00") : null;
+            const endDate = endDateStr ? new Date(endDateStr + "T23:59:59") : null;
+
+            $("#messages").html("<p style='text-align:center;'>Loading messages...</p>");
+
+            // Load specific channel JSON from /static_data/
+            const jsonPath = `static_data/${channelId}.json`;
+
+            fetch(jsonPath)
+                .then(response => {
+                    if (!response.ok) throw new Error("Channel data not found");
+                    return response.json();
+                })
+                .then(data => {
+                    $("#messages").empty();
+
+                    // Sort by timestamp (Oldest to Newest)
+                    data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+                    let count = 0;
+                    data.forEach(message => {
+                        const msgTimestamp = new Date(message.timestamp);
+
+                        // 1. Date Filter
+                        if (startDate && msgTimestamp < startDate) return;
+                        if (endDate && msgTimestamp > endDate) return;
+
+                        // 2. Media Type Filter
+                        if (selectedMediaType !== "all" && message.media_type !== selectedMediaType) return;
+
+                        count++;
+                        appendMessage(message);
+                    });
+
+                    if (count === 0) {
+                        $("#messages").html("<p style='text-align:center;'>No messages found for this criteria.</p>");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    $("#messages").html(`<div class="error-msg">Error loading messages for this member. Make sure <b>${channelId}.json</b> exists in <b>/static_data/</b>.</div>`);
+                });
+        }
+
+        function appendMessage(msg) {
+            const channelName = getChannelName(msg.channel_id);
+            let attachmentHtml = "";
+
+            if (msg.url) {
+                if (msg.media_type === "image") {
+                    attachmentHtml = `
+                        <div class="message-attachment">
+                            <img src="${msg.url}" onclick="showFullImage(this.src)" loading="lazy" alt="Attachment">
+                        </div>`;
+                } else if (msg.media_type === "audio") {
+                    attachmentHtml = `
+                        <div class="message-attachment">
+                            <audio controls style="width:100%"><source src="${msg.url}" type="audio/mpeg"></audio>
+                        </div>`;
+                } else if (msg.media_type === "video") {
+                    attachmentHtml = `
+                        <div class="message-attachment">
+                            <video controls style="width:100%"><source src="${msg.url}" type="video/mp4"></video>
+                        </div>`;
+                }
+            }
+
+            const html = `
+                <div class="message">
+                    <div class="message-header">
+                        <div class="message-avatar">
+                            <img src="avatar/${channelName}.jpg" onerror="this.src='avatar/default.jpg'">
+                        </div>
+                        <div class="message-info">
+                            <div class="message-author">${channelName}</div>
+                            <div class="message-timestamp">${formatDate(msg.timestamp)}</div>
+                        </div>
+                    </div>
+                    ${msg.content ? `<div class="message-content">${msg.content}</div>` : ""}
+                    ${attachmentHtml}
+                </div>
+            `;
+            $("#messages").append(html);
+        }
+
+        function getChannelName(id) {
+            const channels = {
+                "1484896149713457213": "Gita",
+                
+                "1484896111696154674": "Christy",
+                "1484896125243887791": "Eli",
+                "1484896141614121101": "Freya",
+                "1484896166289342536": "Jessi",
+                "1484896202196521111": "Muthe",
+                "1484896206223048799": "Olla",
+                
+                "1484896138522918932": "Fiony",
+                "1484896185662836807": "Lulu",
+                "1484896211289899130": "Oniel",
+                
+                "1484896162787102720": "Indah",
+                "1484896177127424111": "Kathrina",
+                "1484896193719828651": "Marsha",
+                
+                "1484896133615587498": "Ella",
+                "1484896181342437376": "Lia",
+                "1484896189634711763": "Lyn",
+                "1484896215236743289": "Raisha",
+                
+                "1484896090800001074": "Alya",
+                "1484896098945339573": "Anin",
+                "1484896102489784392": "Cathy",
+                "1484896106210132099": "Chelsea",
+                "1484896114762317994": "Cynthia",
+                "1484896118197190776": "Daisy",
+                "1484896121309630515": "Danella",
+                "1484896129836384470": "Elin",
+                "1484896144890007682": "Gendis",
+                "1484896153702109187": "Gracie",
+                "1484896157850275981": "Greesel",
+                "1484896198782615693": "Michie",
+                
+                "1484896220408184974": "Aralie",
+                "1484908841031307285": "Delynn",
+                "1484896230411866208": "Erine",
+                "1484896234459369603": "Fritzy",
+                "1484896268290621570": "Kimmy",
+                "1484896226406301697": "Lana",
+                "1484896246077591603": "Levi",
+                "1484896237931991090": "Lily",
+                "1484896253429940314": "Nachia",
+                "1484896263928283146": "Nala",
+                "1484896250015907860": "Nayla",
+                "1484896256672399410": "Oline",
+                "1484896260006608896": "Ribka",
+                "1484896242109775902": "Trisha",
+
+                "1484896276767182868": "Auwia",
+                "1484896291564818513": "Ekin",
+                "1484896284593754314": "Giaa",
+                "1484896309025443882": "Intan",
+                "1484896294773461125": "Jemima",
+                "1484896288368758784": "Maira",
+                "1484896298942464212": "Mikaela",
+                "1484896280810356757": "Rilly",
+                "1484896273441226812": "Virgi",
+
+                "1502872151118839829": "Bella",
+                "1502872138909220966": "Carissa",
+                "1502872163168817162": "Fahira",
+                "1502872126946938950": "Fera",
+                "1502872187856752812": "Heidi",
+                "1502872212242432010": "Jazzy",
+                "1502872200473219152": "Maxine",
+                "1502872224669892719": "Ralyne",
+                "1502872174745358427": "Rara",
+                "1502872236569264158": "Sona",
+            };
+            return channels[id] || "Unknown";
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric',
+                hour: 'numeric', minute: '2-digit', hour12: true
+            });
+        }
+
+        function showFullImage(src) {
+            $("#fullImage").attr("src", src);
+            $("#fullImageModal").css("display", "flex");
+        }
+
+        function changeTheme(theme) {
+            if (theme === 'default') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+
+        // Load messages for the default selected member on start
+        $(document).ready(function() {
+            loadMessages();
+        });
+    </script>
+</body>
+</html>
