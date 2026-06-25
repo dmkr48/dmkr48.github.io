@@ -610,8 +610,8 @@
                 <div class="filter-group">
                     <label for="channel">Member:</label>
                     <select id="channel" name="channel">
-                        <option value="All" disabled>Please select a Member</option>
-                        <option value="1484896149713457213" selected>(Gen 06) Gita</option>
+                        <option value="00000" selected>Please select a Member</option>
+                        <option value="1484896149713457213">(Gen 06) Gita</option>
                         
                         <option value="1484896111696154674">(Gen 07) Christy</option>
                         <option value="1484896125243887791">(Gen 07) Eli</option>
@@ -909,6 +909,7 @@
 
         function getChannelName(id) {
             const channels = {
+                "00000": "JKT48 PM",
                 "1484896149713457213": "Gita",
                 
                 "1484896111696154674": "Christy",
